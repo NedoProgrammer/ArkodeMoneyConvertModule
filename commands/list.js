@@ -19,6 +19,6 @@ module.exports = {
 		embed.setColor("GOLD");
 		embed.setTitle("List of currencies");
 		embed.setDescription(description);
-		await interaction.reply({embeds: [embed]});
+		await interaction.reply({embeds: [embed], ephemeral: true});
 	}
 }
