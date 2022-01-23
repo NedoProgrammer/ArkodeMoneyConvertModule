@@ -3,6 +3,7 @@ const {BaseCommandInteraction, MessageEmbed} = require('discord.js');
 const { exchangeRates } = require('exchange-rates-api');
 const embeds = require('../helpers/simple_embeds.js');
 const currencies = require('../currencies.js');
+const symbolMap = require('currency-symbol-map/map');
 module.exports = {
 	info: new SlashCommandBuilder()
 		.setName('money_popular')
@@ -31,14 +32,15 @@ module.exports = {
 		}
 		const exchange_rates = await exchangeRates().setApiBaseUrl('https://api.exchangerate.host').latest().base(base).symbols(this.convert_to).fetch();
 		const embed = new MessageEmbed();
-		embed.setDescription(`**${amount} ${currencies.currencies.get(base)} (${base}) is:**`);
+		embed.setDescription(`**${symbolMap[base]}${amount} ${base} is:**`);
 		embed.setColor("GOLD");
+		embed.setTimestamp(new Date());
 		for(const c of this.convert_to)
 		{
 			const number = exchange_rates[c] * amount;
 			const rounded = +(Math.round(number + "e+" + 2)  + "e-" + 2)
 			if(c === base) continue;
-			embed.addField(`${currencies.currencies.get(c)} (${c})`, rounded.toString(), true)
+			embed.addField(`${c}`, `${symbolMap[c]}${rounded.toString()}`, true)
 		}
 		await interaction.reply({embeds: [embed]})
 	}

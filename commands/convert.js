@@ -1,8 +1,9 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
 const {BaseCommandInteraction, MessageEmbed} = require('discord.js');
 const currencies = require('../currencies.js');
-const {convert, exchangeRates} = require('exchange-rates-api');
+const {exchangeRates} = require('exchange-rates-api');
 const embeds = require('../helpers/simple_embeds.js');
+const symbolMap = require('currency-symbol-map/map');
 module.exports = {
 	info: new SlashCommandBuilder()
 		.setName('money_convert')
@@ -41,7 +42,8 @@ module.exports = {
 		converted = +(Math.round(converted + "e+" + 2)  + "e-" + 2);
 		const embed = new MessageEmbed();
 		embed.setColor("GOLD");
-		embed.setDescription(`**${amount}** of ${currencies.currencies.get(base)} (${base}) is **${converted}** of ${currencies.currencies.get(result)} (${result})`);
+		embed.setDescription(`**${symbolMap[base]}${amount}** ${base} is **${symbolMap[result]}${converted}** ${result}`);
+		embed.setTimestamp(new Date());
 		await interaction.reply({embeds: [embed]});
 	}
 };
